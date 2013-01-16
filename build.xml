@@ -305,6 +305,89 @@ This target checks that the output of that implied transform is valid HTML
 
 </target>
 
+<target name="gen-domwrap">
+        <property name="level" value="1"/>
+        <property name="module" value="core"/>
+        <property name="dst.dir" value="${build.dir}/domwrap/level${level}/${module}"/>
+
+    <copy todir="${dst.dir}">
+        <fileset dir="docs/resources" includes="COPYRIGHT.html"/>
+    </copy>
+    <replace file="${dst.dir}/COPYRIGHT.html"
+         token="Level 1 Core" value="Level ${level} ${module}"/>
+    <copy todir="${dst.dir}">
+         <fileset dir="tests/level${level}/${module}/files"
+             excludes="*.bak *.html *.xml *.xhtml *.svg *.js"/>
+    </copy>
+
+        <style basedir="${tests.dir}/level${level}/${module}"
+                   destdir="${dst.dir}/src/test/resources"
+                   includes="*.xml"
+           excludes="metadata.xml alltests.xml"
+               style="${transforms.dir}/test-to-domwrap-html.xsl"
+               extension=".js">
+                <param name="interfaces-docname"
+                       expression="../${build.dir}/dom${level}-interfaces.xml"/>
+                <param name="target-uri-base"
+                       expression="http://www.w3.org/2001/DOM-Test-Suite/level${level}/${module}/"/>
+        <param name="testpath" expression="../level${level}/${module}/"/>
+        </style>
+
+        <style basedir="${tests.dir}/level${level}/${module}"
+                   destdir="${dst.dir}/src/test/java/au/com/samcday/rhino/domwrap"
+                   includes="*.xml"
+           excludes="metadata.xml alltests.xml"
+               style="${transforms.dir}/test-to-domwrap-java.xsl"
+               extension=".java">
+                <param name="interfaces-docname"
+                       expression="../${build.dir}/dom${level}-interfaces.xml"/>
+                <param name="target-uri-base"
+                       expression="http://www.w3.org/2001/DOM-Test-Suite/level${level}/${module}/"/>
+        <param name="testpath" expression="../level${level}/${module}/"/>
+        </style>
+
+
+        <style basedir="${tests.dir}/level${level}/${module}"
+                   destdir="${dst.dir}"
+                   includes="alltests.xml"
+               style="${transforms.dir}/suite-to-domwrap_ant.xsl"
+               extension=".ant">
+               <param name="level" expression="${level}"/>
+               <param name="module" expression="${module}"/>
+        </style>
+
+        <style basedir="${tests.dir}/level${level}/${module}"
+                   destdir="${dst.dir}"
+                   includes="alltests.xml"
+               style="${transforms.dir}/suite-to-selfhtml_html.xsl"
+               extension=".frame.html">
+        <param name="title" expression="DOM Level ${level} ${module} Test Suite - HTML"/>
+        </style>
+
+         <move todir="${dst.dir}/src/test/java/au/com/samcday/rhino/domwrap">
+          <fileset dir="${dst.dir}/src/test/java/au/com/samcday/rhino/domwrap">
+            <exclude name="**/Test*.java"/>
+          </fileset>
+          <mapper type="glob" from="*" to="Test_*"/>
+        </move>
+
+        <!--  a suite creates an Ant file that is executed to fixup the filenames  -->
+        <ant antfile="${dst.dir}/alltests.ant">
+                <property name="html.dir" value="${dst.dir}/src/test/resources"/>
+                <property name="java.dir" value="${dst.dir}/src/test/java/au/com/samcday/rhino/domwrap"/>
+                <property name="files.dir" value="${tests.dir}/level${level}/${module}/files"/>
+                <property name="l1files.dir" value="${tests.dir}/level1/${module}/files"/>
+                <property name="ecmascript.dir" location="ecmascript"/>
+        </ant>
+
+
+    <antcall target="validate-html">
+        <param name="dir" value="${dst.dir}"/>
+    </antcall>
+
+
+</target>
+
 <target name="gen-selfxhtml">
         <property name="level" value="1"/>
         <property name="module" value="core"/>
@@ -799,6 +882,13 @@ This target checks that the output of that implied transform is valid HTML
 
 <target name="dom1-core-gen-selfhtml" depends="dom1-interfaces,dom1-dtd">
     <antcall target="gen-selfhtml">
+        <param name="level" value="1"/>
+        <param name="module" value="core"/>
+    </antcall>
+</target>
+
+<target name="dom1-core-gen-domwrap" depends="dom1-interfaces,dom1-dtd">
+    <antcall target="gen-domwrap">
         <param name="level" value="1"/>
         <param name="module" value="core"/>
     </antcall>

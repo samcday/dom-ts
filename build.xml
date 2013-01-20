@@ -321,7 +321,7 @@ This target checks that the output of that implied transform is valid HTML
     </copy>
 
         <style basedir="${tests.dir}/level${level}/${module}"
-                   destdir="${dst.dir}/src/test/resources"
+                   destdir="${dst.dir}/src/test/resources/level${level}"
                    includes="*.xml"
            excludes="metadata.xml alltests.xml"
                style="${transforms.dir}/test-to-domwrap-html.xsl"
@@ -334,11 +334,12 @@ This target checks that the output of that implied transform is valid HTML
         </style>
 
         <style basedir="${tests.dir}/level${level}/${module}"
-                   destdir="${dst.dir}/src/test/java/au/com/samcday/rhino/domwrap"
+                   destdir="${dst.dir}/src/test/java/au/com/samcday/rhino/domwrap/test/level${level}"
                    includes="*.xml"
            excludes="metadata.xml alltests.xml"
                style="${transforms.dir}/test-to-domwrap-java.xsl"
                extension=".java">
+                <param name="level" expression="level${level}"/>
                 <param name="interfaces-docname"
                        expression="../${build.dir}/dom${level}-interfaces.xml"/>
                 <param name="target-uri-base"
@@ -364,8 +365,8 @@ This target checks that the output of that implied transform is valid HTML
         <param name="title" expression="DOM Level ${level} ${module} Test Suite - HTML"/>
         </style>
 
-         <move todir="${dst.dir}/src/test/java/au/com/samcday/rhino/domwrap">
-          <fileset dir="${dst.dir}/src/test/java/au/com/samcday/rhino/domwrap">
+         <move todir="${dst.dir}/src/test/java/au/com/samcday/rhino/domwrap/test/level${level}" includeemptydirs="false">
+          <fileset dir="${dst.dir}/src/test/java/au/com/samcday/rhino/domwrap/test/level${level}">
             <exclude name="**/Test*.java"/>
           </fileset>
           <mapper type="glob" from="*" to="Test_*"/>
@@ -373,12 +374,16 @@ This target checks that the output of that implied transform is valid HTML
 
         <!--  a suite creates an Ant file that is executed to fixup the filenames  -->
         <ant antfile="${dst.dir}/alltests.ant">
-                <property name="html.dir" value="${dst.dir}/src/test/resources"/>
-                <property name="java.dir" value="${dst.dir}/src/test/java/au/com/samcday/rhino/domwrap"/>
+                <property name="html.dir" value="${dst.dir}/src/test/resources/level${level}"/>
+                <property name="java.dir" value="${dst.dir}/src/test/java/au/com/samcday/rhino/domwrap/test/level${level}"/>
                 <property name="files.dir" value="${tests.dir}/level${level}/${module}/files"/>
                 <property name="l1files.dir" value="${tests.dir}/level1/${module}/files"/>
                 <property name="ecmascript.dir" location="ecmascript"/>
         </ant>
+
+            <copy todir="${dst.dir}/src/test/resources/files">
+                <fileset dir="tests/level${level}/${module}/files" includes="**/*" excludes="*.bak"/>
+    </copy>
 
 
     <antcall target="validate-html">

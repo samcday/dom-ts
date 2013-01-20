@@ -25,6 +25,7 @@ saxon -o someTest.js someTest.xml test-to-selfhtml.xsl
 <xsl:stylesheet version="1.0" 
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
     <xsl:param name="testpath">../level1/core/</xsl:param>
+    <xsl:param name="level">level1</xsl:param>
     <xsl:param name="target-uri-base">http://www.w3.org/2001/DOM-Test-Suite/tests/Level-1/</xsl:param>
     
 
@@ -39,14 +40,15 @@ saxon -o someTest.js someTest.xml test-to-selfhtml.xsl
 
         <xsl:call-template name="copyright-comment"/>
 
-package au.com.samcday.rhino.domwrap;
+package au.com.samcday.rhino.domwrap.test.<xsl:value-of select="$level"/>;
 
+import au.com.samcday.rhino.domwrap.test.DomWrapTestBase;
 import org.junit.Test;
 
 public class Test_<xsl:value-of select="@name"/> extends DomWrapTestBase {
     @Test
     public void testCase() {
-      super.runTest("<xsl:value-of select="@name"/>");
+      super.runTest("<xsl:value-of select="$level"/>/<xsl:value-of select="@name"/>");
     }
 }
 </xsl:template>

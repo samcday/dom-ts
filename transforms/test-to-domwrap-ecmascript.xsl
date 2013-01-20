@@ -1062,23 +1062,21 @@ function handleEvent(listener, event, userObj) {
 </xsl:template>
 
 <xsl:template match="*[local-name()='load' and not(@interface)]" mode="body">
-        <xsl:text>
-        	doc = document;
-        	<!--
+       <!--  <xsl:text>
       var </xsl:text><xsl:value-of select="@var"/><xsl:text>Ref = null;
       if (typeof(this.</xsl:text><xsl:value-of select="@var"/><xsl:text>) != 'undefined') {
         </xsl:text>
         <xsl:value-of select="@var"/><xsl:text>Ref = this.</xsl:text><xsl:value-of select="@var"/><xsl:text>;
       }
-      </xsl:text>
+      </xsl:text> -->
 	<xsl:value-of select="@var"/>
-	<xsl:text> = load(</xsl:text>
+	<xsl:text> = load(<!-- </xsl:text>
     <xsl:value-of select="@var"/>
     <xsl:text>Ref, "</xsl:text>
     <xsl:value-of select="@var"/>
-    <xsl:text>", "</xsl:text>
+    <xsl:text>",  -->"</xsl:text>
 	<xsl:value-of select="@href"/>
-	<xsl:text>");-->
+	<xsl:text>");
       </xsl:text>
 </xsl:template>-
 

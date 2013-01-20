@@ -59,10 +59,9 @@ saxon -o alltests.ant alltests.xml suite-to-svgunit.xsl
     				<delete file="{$testjs}"/>    				
     				<delete file="{$testjava}"/>    				
     			</xsl:when>
-    			<xsl:when test="$loads">
+    			<!-- <xsl:when test="$loads">
 		    		<xsl:for-each select="$loads[1]">
 		    			<xsl:choose>
-		    				<!-- if we are L2 HTML then need to look for files in either location  -->
 	    					<xsl:when test="$level = 2 and $module = 'html' and @href != 'frame2' and @href != 'iframe2' and @href != 'optionscollection'">
 	    						<xsl:variable name="testsrc" select="concat('${l1files.dir}/', concat(@href, $extension))"/>
 	    						<copy tofile="{$testdst}" file="{$testsrc}" overwrite="yes"/>
@@ -106,13 +105,13 @@ saxon -o alltests.ant alltests.xml suite-to-svgunit.xsl
 	    					</xsl:otherwise>
 	    				</xsl:choose>
 		    		</xsl:for-each>
-		    	</xsl:when>
-		    	<xsl:otherwise>
+		    	</xsl:when> -->
+		    <!-- 	<xsl:otherwise>
 		    			<copy tofile="{$testdst}" overwrite="yes">
 		    				<xsl:attribute name="file">${ecmascript.dir}/implementation<xsl:value-of select="$extension"/></xsl:attribute>
 		    			</copy>
 		    			<replace file="{$testdst}" token="src='test.js'" value="src='{$testname}.js'"/>
-		    	</xsl:otherwise>
+		    	</xsl:otherwise> -->
 		    </xsl:choose>
     	</xsl:for-each>
     </target>
